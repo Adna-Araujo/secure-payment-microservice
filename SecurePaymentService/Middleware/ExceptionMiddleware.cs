@@ -6,32 +6,33 @@ namespace SecurePaymentService.Middleware;
 public class ExceptionMiddleware {
     private readonly RequestDelegate _next;
     private readonly ILogger<ExceptionMiddleware> _logger;
-    private readonly IHostEnvironment _env;
-    public ExceptionMiddleware(RequestDelegate next, ILogger<ExceptionMiddleware> logger, IHostEnvironment env) {
+
+    public ExceptionMiddleware(RequestDelegate next, ILogger<ExceptionMiddleware> logger) {
         _next = next;
         _logger = logger;
-        _env = env;
     }
-    public async Task InvokeAsync(HttpContext context) {
+
+    public async Task InvokeAsync(HttpContext httpContext) {
         try {
-            await _next(context); // Tenta seguir com a requisição normal
-        }
-        catch (Exception ex) {
-            _logger.LogError(ex, ex.Message); // Registra o erro no log/terminal
-            await HandleExceptionAsync(context, ex); // Trata o erro de forma amigável
+            await _next(httpContext);
+        } catch (Exception ex) {
+            _logger.LogError($"Algo deu errado: {ex}");
+            await HandleExceptionAsync(httpContext, ex);
         }
     }
 
-    private async Task HandleExceptionAsync(HttpContext context, Exception exception) {
+    private static Task HandleExceptionAsync(HttpContext context, Exception exception) {
         context.Response.ContentType = "application/json";
-        context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+        
+        // Se for um erro de argumento (como o nosso do cartão), mandamos 400. 
+        // Senão, mandamos 500 (Erro interno).
+        context.Response.StatusCode = exception is ArgumentException 
+            ? (int)HttpStatusCode.BadRequest 
+            : (int)HttpStatusCode.InternalServerError;
 
-        var response = new ErrorDetails {
+        return context.Response.WriteAsync(new ErrorDetails() {
             StatusCode = context.Response.StatusCode,
-            Message = "Ocorreu um erro interno no servidor de pagamentos.",
-            // Só mostra o erro detalhado se estivermos em ambiente de desenvolvimento
-            Trace = _env.IsDevelopment() ? exception.StackTrace?.ToString() : null
-        };
-        await context.Response.WriteAsync(response.ToString());
+            Message = exception.Message
+        }.ToString());
     }
 }

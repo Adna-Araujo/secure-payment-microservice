@@ -1,4 +1,6 @@
 using System.ComponentModel.DataAnnotations;
+using SecurePaymentService.Shared.Enums;      // Onde mora o seu Enum
+using SecurePaymentService.Shared.Constants;  // Onde mora sua Constante
 
 namespace SecurePaymentService.DTOs;
 
@@ -12,5 +14,5 @@ public record PaymentRequestDTO(
     string CardNumber, 
 
     [StringLength(3, MinimumLength = 3, ErrorMessage = "A moeda deve ter 3 caracteres (ex: BRL).")]
-    string Currency = "BRL"
+    string Currency = PaymentConstants.DefaultCurrency
 );

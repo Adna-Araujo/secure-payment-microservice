@@ -9,19 +9,16 @@ namespace SecurePaymentService.Controllers;
 public class PaymentController : ControllerBase {
     private readonly IPaymentService _paymentService;
 
-    // Agora injetamos o SERVICE, não o Banco de Dados!
     public PaymentController(IPaymentService paymentService) {
         _paymentService = paymentService;
     }
 
     [HttpPost]
     public async Task<IActionResult> CreatePayment([FromBody] PaymentRequestDTO request) {
-        try {
-            var result = await _paymentService.ProcessPaymentAsync(request);
-            return Ok(result);
-        } catch (ArgumentException ex) {
-            return BadRequest(ex.Message);
-        }
+        // Se o Service lançar um ArgumentException (cartão inválido), 
+        // o Middleware captura e devolve o BadRequest automaticamente.
+        var result = await _paymentService.ProcessPaymentAsync(request);
+        return Ok(result);
     }
 
     [HttpGet]

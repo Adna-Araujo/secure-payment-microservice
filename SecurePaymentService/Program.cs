@@ -5,32 +5,33 @@ using SecurePaymentService.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// 1. Adiciona o suporte para Controllers
+// --- SERVIÇOS (Configuração) ---
 builder.Services.AddControllers();
-
-// 2. Configura o Swagger
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// Banco de Dados (PostgreSQL)
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// Registrar o nosso novo serviço de pagamento
+// Registro de Injeção de Dependência (Fundamental para a arquitetura!)
 builder.Services.AddScoped<IPaymentService, PaymentService>();
 
 var app = builder.Build();
+
+// --- MIDDLEWARES (Execução) ---
+
+// 1. Rede de proteção global (deve vir primeiro!)
 app.UseMiddleware<ExceptionMiddleware>(); 
-if (app.Environment.IsDevelopment()) {
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
-// 3. Ativa o Swagger no ambiente de desenvolvimento
+
 if (app.Environment.IsDevelopment()) {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
 app.UseHttpsRedirection();
-// 4. Mapeia os Controllers (ele vai procurar automaticamente na pasta Controllers)
+
+// 2. Mapeamento de Rotas
 app.MapControllers();
+
 app.Run();
