@@ -1,8 +1,10 @@
-Microsoft Visual Studio Solution File, Format Version 12.00
+﻿Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.2.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SecurePaymentService", "SecurePaymentService\SecurePaymentService.csproj", "{F3567E6E-9C7A-FCCC-3C11-B91D6CFE5B84}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SecurePaymentService.Tests", "SecurePaymentService.Tests\SecurePaymentService.Tests.csproj", "{59361BAD-D287-41A5-8E5B-F47046423B75}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -14,6 +16,10 @@ Global
 		{F3567E6E-9C7A-FCCC-3C11-B91D6CFE5B84}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F3567E6E-9C7A-FCCC-3C11-B91D6CFE5B84}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F3567E6E-9C7A-FCCC-3C11-B91D6CFE5B84}.Release|Any CPU.Build.0 = Release|Any CPU
+		{59361BAD-D287-41A5-8E5B-F47046423B75}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{59361BAD-D287-41A5-8E5B-F47046423B75}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{59361BAD-D287-41A5-8E5B-F47046423B75}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{59361BAD-D287-41A5-8E5B-F47046423B75}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,35 +1,49 @@
-#  Secure Payment Microservice
+# Secure Payment Microservice
+Este é um microserviço de processamento de pagamentos desenvolvido em .NET 8, focado em segurança de dados, Clean Code e TDD (Test Driven Development). O projeto demonstra um fluxo robusto, desde a validação algorítmica de cartões até a persistência segura e testada.
 
-Este é um microserviço de processamento de pagamentos desenvolvido em **.NET 8**, focado em segurança de dados, arquitetura limpa e resiliência. O projeto demonstra o fluxo completo desde a validação de cartões até a persistência em banco de dados relacional.
+# Tecnologias e Ferramentas
+Backend: .NET 8 (ASP.NET Core Web API)
+Banco de Dados: PostgreSQL (Persistência Real) & EF Core InMemory (para Testes)
+ORM: Entity Framework Core (Migrations)
+Testes: xUnit, Moq e FluentAssertions
+Documentação: Swagger/OpenAPI
+Segurança: Algoritmo de Luhn (Mod10) e Sanitização de Logs
 
-##  Tecnologias e Padrões
-- **Framework:** .NET 8 (ASP.NET Core Web API)
-- **Banco de Dados:** PostgreSQL
-- **ORM:** Entity Framework Core (Migrations)
-- **Documentação:** Swagger/OpenAPI
-- **Segurança:** Implementação do Algoritmo de Luhn (Mod10)
-- **Arquitetura:** Padrão DTO (Data Transfer Objects) e Middleware Global de Erros
+# Arquitetura e Boas Práticas
+O projeto foi construído seguindo princípios de SOLID e Clean Code, destacando-se por:
+Service Pattern: Lógica de negócio isolada dos Controllers.
+Data Transfer Objects (DTOs): Contratos de entrada e saída bem definidos, evitando exposição de entidades de banco.
+Tratamento Global de Exceções: Custom Middleware para padronização de erros e limpeza de blocos try-catch.
+Shared Kernel: Centralização de Enums e Constantes para eliminar "Magic Strings".
+Fail-Fast Validation: Uso de Data Annotations para validar requisições antes do processamento.
 
-##  Diferenciais do Projeto
-- **Validação Algorítmica:** Proteção contra números de cartões inválidos antes mesmo de atingir o banco.
-- **Privacidade por Design:** Mascaramento automático de dados sensíveis em respostas de API.
-- **Tratamento de Exceções:** Middleware customizado para garantir respostas JSON padronizadas mesmo em falhas críticas.
-- **Persistência Real:** Diferente de projetos em memória, este utiliza um banco relacional real para armazenamento.
+# Qualidade de Código (Testes)
+Este projeto utiliza Testes Unitários para garantir a integridade das regras de negócio:
 
-##  Como Executar
-1. Clone o repositório.
-2. Configure sua string de conexão no `appsettings.json`.
-3. Execute as migrações para criar o banco: `dotnet ef database update`.
-4. Inicie a aplicação: `dotnet run`.
+1. Validação de Luhn: Testes que garantem o bloqueio de cartões inválidos.
+2. Persistência: Testes de integração utilizando banco em memória para validar o salvamento de transações.
+3. Padronização: Verificação de mensagens de erro e status de retorno.
 
+# Como Executar
+Pré-requisitos
+.NET 8 SDK
+PostgreSQL (ou ajuste a string de conexão para outro provider)
 
-<img width="1240" height="693" alt="image" src="https://github.com/user-attachments/assets/dc376f03-7c5e-4791-9c0f-a71e14c47cb7" />
+# Instalação
+Clone o repositório: git clone https://github.com/seu-usuario/secure-payment-microservice.git
+Configure a DefaultConnection no appsettings.json.
+Execute as migrations: dotnet ef database update.
+Inicie a API: dotnet run.
 
+# Rodando os Testes
+Para validar a segurança e o funcionamento do sistema, execute:
 
-##  Próximos Passos
+    Bash
+    dotnet test
 
-[ ] Implementação de Testes Unitários com xUnit.
+# Próximos Passos
+[ ] Implementação do Repository Pattern para abstração total do banco.
 
-[ ] Adição de Injeção de Dependência com Repository Pattern.
+[ ] Autenticação via JWT para proteção dos endpoints.
 
-[ ] Autenticação via JWT para proteger os endpoints.
+[ ] Implementação de Docker para orquestração do microserviço e banco.
