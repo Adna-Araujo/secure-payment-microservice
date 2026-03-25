@@ -13,24 +13,32 @@ public class PaymentService : IPaymentService {
         _context = context;
     }
 
-    public async Task<object> ProcessPaymentAsync(PaymentRequestDTO request) {
-        // Lógica de Validação
-        if (request.Amount <= 0) throw new ArgumentException("Valor inválido.");
+    public async Task<PaymentResponseDTO> ProcessPaymentAsync(PaymentRequestDTO request) {
+        // 1. Validação de Regra de Negócio Complexa
+        // O Amount já foi validado pelo DTO. Mantemos o Luhn aqui porque é uma lógica externa.
         if (!SecurityHelper.ValidateCardNumber(request.CardNumber)) 
             throw new ArgumentException("Cartão inválido pelo algoritmo de Luhn.");
 
-        // Mapeamento e Persistência
+        // 2. Mapeamento para a Entidade de Banco
         var transaction = new PaymentTransaction {
             Amount = request.Amount,
             CardNumber = request.CardNumber,
             Currency = request.Currency,
-            Status = "Approved"
+            Status = "Approved" // Simulação de aprovação imediata
         };
 
+        // 3. Persistência
         _context.Transactions.Add(transaction);
         await _context.SaveChangesAsync();
 
-        return new { Message = "Pagamento processado!", Id = transaction.Id };
+        // 4. Retorno usando o DTO de Resposta (Clean Code!)
+        return new PaymentResponseDTO(
+            transaction.Id,
+            transaction.Amount,
+            transaction.Status,
+            MaskCardNumber(transaction.CardNumber),
+            transaction.CreatedAt
+        );
     }
 
     public async Task<IEnumerable<PaymentResponseDTO>> GetAllTransactionsAsync() {
@@ -47,6 +55,7 @@ public class PaymentService : IPaymentService {
 
     // Método privado para Clean Code: Cada método faz só uma coisa!
     private string MaskCardNumber(string cardNumber) {
+        if (string.IsNullOrEmpty(cardNumber) || cardNumber.Length < 4) return "****";
         return $"**** **** **** {cardNumber.Substring(cardNumber.Length - 4)}";
     }
 }
