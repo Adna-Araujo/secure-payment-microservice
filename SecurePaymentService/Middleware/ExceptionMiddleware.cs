@@ -16,7 +16,9 @@ public class ExceptionMiddleware {
         try {
             await _next(httpContext);
         } catch (Exception ex) {
-            _logger.LogError($"Algo deu errado: {ex}");
+           _logger.LogError("Erro processado pelo Middleware: {Message} | Local: {StackTrace}", 
+                ex.Message, 
+                ex.StackTrace);
             await HandleExceptionAsync(httpContext, ex);
         }
     }

@@ -16,9 +16,10 @@ public class PaymentService : IPaymentService {
     }
 
     public async Task<PaymentResponseDTO> ProcessPaymentAsync(PaymentRequestDTO request) {
-        if (!SecurityHelper.ValidateCardNumber(request.CardNumber)) 
-            throw new ArgumentException("Cartão inválido pelo algoritmo de Luhn.");
-
+        if (!SecurityHelper.ValidateCardNumber(request.CardNumber)) {
+    // Lançamos uma ArgumentException, que será capturada pelo nosso Middleware e resultará em um 400 Bad Request.
+            throw new ArgumentException("O número do cartão fornecido é inválido pelo algoritmo de Luhn.");
+    }
         var transaction = new PaymentTransaction {
             Amount = request.Amount,
             CardNumber = request.CardNumber,
